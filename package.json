@@ -1,6 +1,6 @@
 {
   "name": "convert-msdocs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Mohammed Alshahrani @mmogib",
   "bin": {
     "convert-msdocs": "./bin/run"
