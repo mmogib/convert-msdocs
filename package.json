@@ -1,0 +1,41 @@
+{
+  "name": "convert-msdocs",
+  "version": "1.0.0",
+  "author": "Mohammed Alshahrani @mmogib",
+  "bin": {
+    "convert-msdocs": "./bin/run"
+  },
+  "bugs": "https://github.com/mmogib/convert-msdocs/issues",
+  "dependencies": {
+    "@oclif/command": "^1.5.18",
+    "@oclif/config": "^1.13.3",
+    "@oclif/plugin-help": "^2.2.1",
+    "chalk": "^2.4.2",
+    "cli-spinner": "^0.2.10",
+    "cloudmersive-convert-api-client": "^2.0.6",
+    "inquirer": "^7.0.0"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/src"
+  ],
+  "homepage": "https://github.com/mmogib/convert-msdocs",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "oclif": {
+    "bin": "convert-msdocs"
+  },
+  "repository": "mmogib/convert-msdocs",
+  "scripts": {
+    "test": "echo NO TESTS"
+  }
+}
