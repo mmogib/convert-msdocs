@@ -77,7 +77,7 @@ const init = async () => {
         'Your API KEY has been saved. Please run the program again.'
       )
     }
-    const pwd = __dirname //'D:/Dropbox/KFUPMWork/Teaching/OldSemesters/Sem183/MATH102' //__dirname
+    const pwd = process.cwd() //'D:/Dropbox/KFUPMWork/Teaching/OldSemesters/Sem183/MATH102' //__dirname
     const folders = getFilePathsRec(pwd, { include_files: false }).map(
       folder => ({ name: path.basename(folder), value: folder })
     )
