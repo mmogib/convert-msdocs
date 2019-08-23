@@ -1,6 +1,6 @@
 {
   "name": "convert-msdocs",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "author": "Mohammed Alshahrani @mmogib",
   "bin": {
     "convert-msdocs": "./bin/run"
@@ -13,11 +13,10 @@
     "chalk": "^2.4.2",
     "cli-spinner": "^0.2.10",
     "cloudmersive-convert-api-client": "^2.0.6",
-    "inquirer": "^7.0.0"
-  },
-  "devDependencies": {
+    "inquirer": "^7.0.0",
     "rimraf": "^3.0.0"
   },
+  "devDependencies": {},
   "engines": {
     "node": ">=8.0.0"
   },
