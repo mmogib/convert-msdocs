@@ -1,17 +1,37 @@
+# convert-msdocs
+
+A command line interface to convert Microsoft files (.docx, .xlsx, .pptx) to pdf using Cloudmersive srvice
+
+---
+
+## Installation
+
+This package is available on [npm](http://npmjs.com) as `convert-msdocs`.
+
+```sh
+npm install --global convert-msdocs
+```
+
+## Usage
+
+This simple commands does the following:
+
+- lists the folders found in the current folder.
+- finds the last updated folder inside the selected folder
+- creates a folder named SOURCE with two subfolders: NATIVE and PDF at the same level as the selected working folder.
+- copies the (ms files) in the last updated folder to NATIVE and
+
+- converts these files and puts them in PDF
+
+The conversion is done using the service from cloudmersive.com. You need, therefore, to create
+an api key and set it with the command
+
+```sh
+convert-msdocs --key <APIKEY>
+```
+
+then run
+
+```sh
 convert-msdocs
-==============
-
-
-
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/convert-msdocs.svg)](https://npmjs.org/package/convert-msdocs)
-[![CircleCI](https://circleci.com/gh/mmogib/convert-msdocs/tree/master.svg?style=shield)](https://circleci.com/gh/mmogib/convert-msdocs/tree/master)
-[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/mmogib/convert-msdocs?branch=master&svg=true)](https://ci.appveyor.com/project/mmogib/convert-msdocs/branch/master)
-[![Downloads/week](https://img.shields.io/npm/dw/convert-msdocs.svg)](https://npmjs.org/package/convert-msdocs)
-[![License](https://img.shields.io/npm/l/convert-msdocs.svg)](https://github.com/mmogib/convert-msdocs/blob/master/package.json)
-
-<!-- toc -->
-# Usage
-<!-- usage -->
-# Commands
-<!-- commands -->
+```

@@ -42,9 +42,35 @@ const writeData = async (dist, data) => {
 }
 
 /** Retrieve file paths from a given folder and its subfolders. */
+const getFilePaths = (
+  folderPath,
+  {
+    include_files = true,
+    ignore = ['SOURCE', 'node_modules', '.git', '.gitignore']
+  }
+) => {
+  const entryPaths = fs
+    .readdirSync(folderPath)
+    .filter(entry => !ignore.includes(entry))
+    .map(entry => path.join(folderPath, entry))
+
+  const filesOnly = entryPaths.filter(entryPath =>
+    fs.statSync(entryPath).isFile()
+  )
+  const directoriesOnly = entryPaths.filter(
+    entryPath => !filesOnly.includes(entryPath)
+  )
+
+  return include_files ? [...filesOnly, ...dirFiles] : directoriesOnly
+}
+
+/** Retrieve file paths from a given folder and its subfolders. */
 const getFilePathsRec = (
   folderPath,
-  { include_files = true, ignore = ['node_modules', '.git', '.gitignore'] }
+  {
+    include_files = true,
+    ignore = ['SOURCE', 'node_modules', '.git', '.gitignore']
+  }
 ) => {
   const entryPaths = fs
     .readdirSync(folderPath)
@@ -185,6 +211,7 @@ module.exports = {
   wt,
   getBuffer,
   writeData,
+  getFilePaths,
   getFilePathsRec,
   getPathsForSpecificExtensions,
   getLastUpdatedFolder,

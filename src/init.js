@@ -3,23 +3,18 @@ const path = require('path')
 const chalk = require('chalk')
 const { Spinner } = require('cli-spinner')
 const {
-  mkdir,
-  rmdir,
   cp,
   wt,
   stat,
   getBuffer,
   writeData,
-  getFilePathsRec,
-  getFileProps,
+  getFilePaths,
   getLastUpdatedFolder,
   getPathsForSpecificExtensions,
-  folderExists,
-  createSourceFolder,
-  goUpOneDirectory
+  createSourceFolder
 } = require('./fns')
 
-const convert = require('./convert')
+const { convert, checkApi } = require('./convert')
 
 const log = console.log
 
@@ -37,10 +32,21 @@ const createPdf = async (filePath, pdfFolder, basename, extenstion) => {
 }
 
 const startConverting = async (baseFolder, msExtensions) => {
-  const lastUpdatedFolder = getLastUpdatedFolder(baseFolder)
-  const files = getPathsForSpecificExtensions(lastUpdatedFolder, msExtensions)
   return new Promise(async (resolve, reject) => {
     try {
+      const lastUpdatedFolder = getLastUpdatedFolder(baseFolder)
+      if (!lastUpdatedFolder) {
+        reject(
+          new Error(`The working folder, ${baseFolder}, has no subdirectories.`)
+        )
+      }
+      const files = getPathsForSpecificExtensions(
+        lastUpdatedFolder,
+        msExtensions
+      )
+      if (files.length === 0) {
+        reject(new Error(`The folder, ${lastUpdatedFolder}, has no MS files.`))
+      }
       const { nativeFolder, pdfFolder } = await createSourceFolder(baseFolder)
       await Promise.all(
         files.map(({ path, basename, ext }) =>
@@ -58,29 +64,50 @@ const startConverting = async (baseFolder, msExtensions) => {
     }
   })
 }
-
-const init = async () => {
+//b4d3b5ee-ed87-48c7-b409-2dcb2f3f4a20
+const setApiKey = async apiKey => {
+  var spinner = new Spinner(
+    chalk.yellow('%s checking your key, please wait...')
+  )
+  spinner.setSpinnerString('|/-\\')
+  const apiFile = path.join(__dirname, './key.json')
+  spinner.start()
   try {
-    const apiFile = path.join(__dirname, './key.json')
-    const apiKey = require('./key.json').apiKey
-    let questions = []
-    if (apiKey === '') {
-      const { key } = await createPromptModule()([
-        {
-          type: 'input',
-          name: 'key',
-          message: 'Please provide your Cloudmersive API KEY.'
-        }
-      ])
-      await wt(apiFile, JSON.stringify({ apiKey: key }))
-      throw new Error(
-        'Your API KEY has been saved. Please run the program again.'
-      )
-    }
-    const pwd = process.cwd() //'D:/Dropbox/KFUPMWork/Teaching/OldSemesters/Sem183/MATH102' //__dirname
-    const folders = getFilePathsRec(pwd, { include_files: false }).map(
-      folder => ({ name: path.basename(folder), value: folder })
+    await checkApi(apiKey)
+    await wt(apiFile, JSON.stringify({ apiKey }))
+    process.stdout.write('\n ')
+    log(
+      chalk.blue(`Your API KEY has been saved. Now run
+
+        convert-msdocs
+    `)
     )
+    process.stdout.write('\n ')
+    spinner.stop()
+  } catch (error) {
+    if (spinner.isSpinning()) {
+      spinner.stop()
+    }
+    process.stdout.write('\n ')
+    log(chalk.bold.red(error))
+  }
+}
+const init = async () => {
+  var spinner = new Spinner(chalk.yellow('%s converting, please wait...'))
+  spinner.setSpinnerString('|/-\\')
+  try {
+    const apiObject = require(path.join(__dirname, './key.json'))
+    if (apiObject.apiKey === '') {
+      throw new Error(`Please set up your \`cloudmersive.com\` api key by running 
+
+          convert-msdocs --key <apiKey>`)
+    }
+    let questions = []
+    const pwd = process.cwd() //'D:/Dropbox/KFUPMWork/Teaching/OldSemesters/Sem183/MATH102' //__dirname
+    const folders = getFilePaths(pwd, { include_files: false }).map(folder => ({
+      name: path.basename(folder),
+      value: folder
+    }))
     if (folders.length > 0) {
       questions = [
         ...questions,
@@ -118,8 +145,6 @@ const init = async () => {
 
       const { base_folder: baseFolder, extenstions } = await prompt(questions)
 
-      var spinner = new Spinner(chalk.yellow('converting ... %s please wait'))
-      spinner.setSpinnerString('|/-\\')
       spinner.start()
       const { nativeFolder, pdfFolder } = await createSourceFolder(baseFolder)
       await startConverting(baseFolder, extenstions)
@@ -136,8 +161,12 @@ const init = async () => {
       throw new Error('Folder is empty..')
     }
   } catch (error) {
+    if (spinner.isSpinning()) {
+      spinner.stop()
+    }
+    process.stdout.write('\n ')
     log(chalk.bold.red(error))
   }
 }
 
-module.exports = init
+module.exports = { init, setApiKey }
