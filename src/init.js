@@ -64,7 +64,6 @@ const startConverting = async (baseFolder, msExtensions) => {
     }
   })
 }
-//b4d3b5ee-ed87-48c7-b409-2dcb2f3f4a20
 const setApiKey = async apiKey => {
   var spinner = new Spinner(
     chalk.yellow('%s checking your key, please wait...')
